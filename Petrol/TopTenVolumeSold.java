@@ -24,24 +24,34 @@ public class TopTenVolumeSold {
 
 	 */
 	
-	public static class MyMapper extends Mapper<LongWritable,Text,Text,IntWritable>{
+	public static class MyMapper extends Mapper<LongWritable,Text,Text,Text>{
 		public void map(LongWritable key,Text value,Context context) throws IOException, InterruptedException{
 			String arr[]=value.toString().split(",");
 			
-			context.write(new Text(arr[0]),new IntWritable(Integer.parseInt(arr[5])) );
+			context.write(new Text("top 10"),new Text(arr[3]+","+arr[5]+","+arr[0]));
 		}
 	}
-public static class MyReducer extends Reducer<Text,IntWritable,Text,Text>{
+public static class MyReducer extends Reducer<Text,Text,Text,Text>{
 	String ss;
-		TreeMap<Integer,String> tm=new TreeMap<Integer,String>();
-		public void reduce(Text key,Iterable<IntWritable> value,Context context) throws IOException, InterruptedException{
+		TreeMap tm=new TreeMap();
+		public void reduce(Text key,Iterable<Text> value,Context context) throws IOException, InterruptedException{
 			
 			
 			
-			for(IntWritable num:value)
+			for(Text num:value)
 			{
-				 ss=key.toString();
-				tm.put(num.get(), ss);
+				
+				
+				String str[]=num.toString().split(",");
+				
+				float sp=Float.parseFloat(str[0]);
+				int vol=Integer.parseInt(str[1]);
+				
+				String id=str[2];
+				
+				ss=key.toString();
+				String sd=id+","+vol;
+				tm.put(sp, sd);
 				
 				if(tm.size()>10){
 					tm.remove(tm.firstKey());
@@ -65,7 +75,7 @@ public static class MyReducer extends Reducer<Text,IntWritable,Text,Text>{
 		job.setReducerClass(MyReducer.class);
 		//job.setNumReduceTasks(0);
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(IntWritable.class);
+		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		

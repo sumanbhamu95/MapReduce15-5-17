@@ -41,7 +41,7 @@ public static class MyReducer extends Reducer<Text,FloatWritable,Text,Text>{
 				
 				tm.put(num.get(),key.toString());
 				
-				if(tm.size()>10){
+				if(tm.size()>2){
 					tm.remove(tm.lastKey());
 				}
 			}

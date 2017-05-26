@@ -17,51 +17,54 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 public class TotalAmtVolumeSold {
 
 	/**
-	 * 1)In real life what is the total amount of 
-	 * petrol in volume sold by every distributor?
-
+	 * 1)In real life what is the total amount of petrol in volume sold by every
+	 * distributor?
 	 */
-	public static class MyMapper extends Mapper<LongWritable,Text,Text,IntWritable>{
-		public void map(LongWritable key,Text value,Context context) throws IOException, InterruptedException{
-			String arr[]=value.toString().split(",");
-			
-			context.write(new Text(arr[0]+","+arr[1]),new IntWritable(Integer.parseInt(arr[5])) );
+	public static class MyMapper extends
+			Mapper<LongWritable, Text, Text, IntWritable> {
+		public void map(LongWritable key, Text value, Context context)
+				throws IOException, InterruptedException {
+			String arr[] = value.toString().split(",");
+
+			context.write(new Text( arr[1]), new IntWritable(
+					Integer.parseInt(arr[5])));
 		}
 	}
-		public static class MyReducer extends Reducer<Text,IntWritable,Text,IntWritable>{
-			public void reduce(Text key,Iterable<IntWritable> value,Context context) throws IOException, InterruptedException{
-				
-				int s=0;
-				for(IntWritable d:value){
-					s=s+d.get();
-				}
-				context.write(key, new IntWritable(s));
-				
+
+	public static class MyReducer extends
+			Reducer<Text, IntWritable, Text, IntWritable> {
+		public void reduce(Text key, Iterable<IntWritable> value,
+				Context context) throws IOException, InterruptedException {
+
+			int s = 0;
+			for (IntWritable d : value) {
+				s = s + d.get();
 			}
+			context.write(key, new IntWritable(s));
+
 		}
-
-	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
-		
-			Configuration obj = new Configuration();
-			Job job = Job.getInstance(obj, "total amt of volume sold for each distribution.....");
-			job.setJarByClass(TotalAmtVolumeSold.class);
-			job.setMapperClass(MyMapper.class);
-			job.setReducerClass(MyReducer.class);
-			job.setMapOutputKeyClass(Text.class);
-			job.setMapOutputValueClass(IntWritable.class);
-			// job.setNumReduceTasks(2);
-			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(IntWritable.class);
-
-			FileInputFormat.addInputPath(job, new Path(args[0]));
-			FileOutputFormat.setOutputPath(job, new Path(args[1]));
-			FileSystem.get(obj).delete(new Path(args[1]), true);
-			System.exit(job.waitForCompletion(true) ? 0 : 1);
-
-		
-
 	}
 
+	public static void main(String[] args) throws IOException,
+			ClassNotFoundException, InterruptedException {
 
+		Configuration obj = new Configuration();
+		Job job = Job.getInstance(obj,
+				"total amt of volume sold for each distribution.....");
+		job.setJarByClass(TotalAmtVolumeSold.class);
+		job.setMapperClass(MyMapper.class);
+		job.setReducerClass(MyReducer.class);
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(IntWritable.class);
+		// job.setNumReduceTasks(2);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(IntWritable.class);
+
+		FileInputFormat.addInputPath(job, new Path(args[0]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		FileSystem.get(obj).delete(new Path(args[1]), true);
+		System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+	}
 
 }
