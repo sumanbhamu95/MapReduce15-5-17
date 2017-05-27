@@ -1,0 +1,35 @@
+create table movieT(id int,name string,releasedIn int,rating float,duration int)row format delimited fields terminated by "," stored as textfile;
+
+
+
+
+
+load data local inpath '/home/hduser/movie.txt.save' into table movieT;
+
+
+Find the number of movies released between 1945 and 1959
+A) select count(name) from movieT where releasedIn>1945 and releasedIn<1959;
+
+
+...............................................................
+
+Find the number of movies having rating more than 3.5
+A) select name from movieT where rating>3.5;
+
+
+................................................................
+Find the number of movies with duration more than 5000
+A)select count(name) from movieT where duration>5000;
+
+...............................................................
+Find the list of years and number of movies released each year
+A)select releasedIn,count(name) from movieT group by releasedIn;
+
+
+.............................................................
+
+Count the total number of movies in the list
+A)select count(name) from movieT;
+
+
+
