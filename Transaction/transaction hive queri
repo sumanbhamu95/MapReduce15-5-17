@@ -1,0 +1,64 @@
+create table transactionT(id int,trDate string,trId int,amt float,sport string,accessorie string,city string,country string,trMode string)row format delimited fields terminated by "," stored as textfile;
+
+
+
+load data local inpath '/home/hduser/transa.txt' into table transactionT;
+
+
+
+Task 1
+
+Find all the transaction where amt>160
+
+select sport ,amt from transactionT where amt>160;
+
+
+===================================================================================
+
+Task 2
+
+Count all the transaction where amt>160
+
+select count(id) from transacactionT where amt>160;
+
+
+
+===================================================================================
+
+Task 3
+
+Calculate the total sum and total count of all the transaction for each user.
+
+select trId,count(amt),sum(amt) from transactionT group by trId;
+
+===================================================================================
+
+Task 4
+
+Calculate total sales amt for each Month
+
+===================================================================================
+
+Task 5 
+
+Divide the file into 12 files, each file containing each month of data. For eg. file 1 should contain data of january txn, file 2 should contain data of feb txn.
+
+---------------
+
+===================================================================================
+
+Task 6 
+
+Sort the whole file on the basis of amt.
+
+select * from transactionT order by amt;
+
+===================================================================================
+
+Task 7 
+
+Find the top spender user.
+
+select trId,max(amt) a1 from transactionT group by trId order by a1 desc limit 1;
+
+...................................................................................
